@@ -9,10 +9,10 @@ from models.package import Package
 package = Blueprint('packageController', __name__)
 
 @package.route('/')
-@package.route('/packages')
+@package.route('/BookTitles')
 def packages():
     all_packages = Package.getAllPackages()
-    return render_template('packages.html', panel="Package", all_packages=all_packages)
+    return render_template('packages.html', panel="BOOK TITLES", all_packages=all_packages)
 
 @package.route("/viewPackageDetail/<hotel_name>")
 def viewPackageDetail(hotel_name):
