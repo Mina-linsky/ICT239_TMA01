@@ -1,8 +1,7 @@
 from app import db
 
 class Book(db.Document):
-    meta = {'collection': 'books'}  # name of your new collection
-
+    meta = {'collection': 'books'}  # name of my new collection
     title = db.StringField(required=True, max_length=150)
     authors = db.ListField(db.StringField(), required=True)
     genres = db.ListField(db.StringField())
@@ -39,3 +38,4 @@ class Book(db.Document):
             available=available,
             copies=copies
         ).save()
+

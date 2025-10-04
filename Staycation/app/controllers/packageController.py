@@ -5,13 +5,14 @@ from models.forms import BookForm
 
 from models.users import User
 from models.package import Package
+from models.lib_books import Book
 
 package = Blueprint('packageController', __name__)
 
 @package.route('/')
 @package.route('/BookTitles')
 def packages():
-    all_packages = Package.getAllPackages()
+    all_packages = Book.getAllBooks()
     return render_template('packages.html', panel="BOOK TITLES", all_packages=all_packages)
 
 @package.route("/viewPackageDetail/<hotel_name>")
