@@ -29,3 +29,5 @@ with app.app_context():
     print("\nBooks currently in DB:")
     for book in Book.objects:
         print(book.title, "-", book.category)
+
+        # commen
