@@ -6,14 +6,15 @@ from models.forms import BookForm
 from models.users import User
 from models.package import Package
 from models.lib_books import Book
+from app.books import all_books
 
 package = Blueprint('packageController', __name__)
 
 @package.route('/')
 @package.route('/BookTitles')
-def packages():
-    all_packages = Book.getAllBooks()
-    return render_template('packages.html', panel="BOOK TITLES", all_packages=all_packages)
+def book_titles():
+    # all_books = Book.getAllBooks()
+    return render_template('books.html', panel="BOOK TITLES", all_books=all_books)
 
 @package.route("/viewPackageDetail/<hotel_name>")
 def viewPackageDetail(hotel_name):
