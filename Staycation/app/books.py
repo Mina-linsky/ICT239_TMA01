@@ -171,3 +171,14 @@ all_books = [
         , 'copies': 1
         }
 ]
+from app.books import all_books
+from models.lib_books import Book
+
+def initialize_books():
+    if Book.objects.count() == 0:
+        for book_data in all_books:
+            Book(**book_data).save()
+        print("Books added to MongoDB.")
+    else:
+        print("Book collection already populated.")
+

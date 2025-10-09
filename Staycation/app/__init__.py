@@ -62,6 +62,14 @@ def create_app():
     app.register_blueprint(booking)
     app.register_blueprint(package)
 
+
+
+    #broke after this
+    # ✅ Import and call initialize_books after app + db are ready
+    from app.controllers.packageController import initialize_books
+    initialize_books()  # <-- Runs only once when the app starts
+    
+
     return app
 
 
