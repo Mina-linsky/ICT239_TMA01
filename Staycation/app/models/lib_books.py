@@ -1,16 +1,23 @@
 from app import db
 
 class Book(db.Document):
-    meta = {'collection': 'books'}  # name of my new collection
-    title = db.StringField(required=True, max_length=150)
-    authors = db.ListField(db.StringField(), required=True)
-    genres = db.ListField(db.StringField())
-    category = db.StringField(max_length=50)
-    url = db.StringField(max_length=500)  # book cover image
-    description = db.ListField(db.StringField())  # multiple paragraphs
-    pages = db.IntField()
-    available = db.IntField(default=0)
-    copies = db.IntField(default=0)
+    meta = {'collection': 'books'}  # defined name of the book collection
+
+    #Book info
+    title = db.StringField(required=True, max_length=200)
+    category = db.StringField(max_length=50, required=True)
+    url = db.StringField(max_length=500)
+    pages = db.IntField(required=True, min_value=1)
+    available = db.IntField(default=0, min_value=0)
+    copies = db.IntField(default=1, min_value=1)
+
+    # List fields
+    genres = db.ListField(db.StringField(max_length=50))
+    authors = db.ListField(db.StringField(max_length=100), required=True)
+    description = db.ListField(db.StringField())
+
+    def __str__(self):
+        return f"{self.title} by {', '.join(self.authors)}"
 
     # Optional: method to check stock
     def is_available(self):
@@ -27,7 +34,7 @@ class Book(db.Document):
 
     @staticmethod
     def createBook(title, authors, genres, category, url, description, pages, available, copies):
-        return Book(
+        book = Book(
             title=title,
             authors=authors,
             genres=genres,
@@ -37,5 +44,8 @@ class Book(db.Document):
             pages=pages,
             available=available,
             copies=copies
-        ).save()
+        )
+        return book.save()  # returns the saved Book instanc
+
+
 

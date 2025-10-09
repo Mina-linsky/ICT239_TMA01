@@ -6,7 +6,6 @@ from models.forms import BookForm
 from models.users import User
 from models.package import Package
 from models.book import Booking
-
 from datetime import date, timedelta
 
 booking = Blueprint('bookingController', __name__) # use bookingController.fn

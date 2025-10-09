@@ -6,7 +6,7 @@ from models.forms import BookForm
 from models.users import User
 from models.package import Package
 from models.lib_books import Book
-from app.books import all_books
+from app.books import all_books #question 2a to populate the books
 
 package = Blueprint('packageController', __name__)
 

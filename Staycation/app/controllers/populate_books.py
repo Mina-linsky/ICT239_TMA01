@@ -30,4 +30,3 @@ with app.app_context():
     for book in Book.objects:
         print(book.title, "-", book.category)
 
-        # commen
