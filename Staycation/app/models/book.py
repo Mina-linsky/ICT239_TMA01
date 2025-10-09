@@ -1,5 +1,5 @@
-from models.users import User
-from models.package import Package
+from app.models.users import User
+from app.models.package import Package
 from app import db
 from mongoengine.queryset.visitor import Q
 
