@@ -139,6 +139,7 @@ app = create_app()
 from app.models.package import Package
 from app.models.book import Booking
 from app.models.users import User
+from app.models.lib_books import Book
 
 @app.route('/base')
 def show_base():
@@ -147,7 +148,7 @@ def show_base():
 
 @app.route("/NewBook", methods=['GET', 'POST'])
 @login_required
-def upload():
+def add():
     genres = [
         "Animals", "Business", "Comics", "Communication", "Dark Academia",
         "Emotion", "Fantasy", "Fiction", "Friendship", "Graphic Novels", "Grief",
@@ -157,30 +158,114 @@ def upload():
     ]
 
     if request.method == 'GET':
-        return render_template("Add_Book.html", 
-                               name=current_user.name, 
-                               panel="Upload",
-                               genres=genres)
+        return render_template(
+            "Add_Book.html", 
+            name=current_user.name, 
+            panel="Upload",
+            genres=genres
+        )
 
     elif request.method == 'POST':
         title = request.form.get('title')
-        authors = request.form.getlist('authors')
-        genres_selected = request.form.getlist('genres')
         category = request.form.get('category')
         url = request.form.get('url')
+        genres_selected = request.form.getlist('genres')
+
+        # Collect authors from author1..author5 fields and filter out empty strings
+        authors = []
+        for i in range(1, 6):
+            a = request.form.get(f'author{i}')
+            if a and a.strip():
+                authors.append(a.strip())
+
+        if not authors:
+            flash("Please enter at least one author.", "danger")
+            return render_template(
+                "Add_Book.html",
+                name=current_user.name,
+                panel="Upload",
+                genres=genres
+            )
+
+        # Get pages and copies, default to 0 and 1 if not provided
+        pages = request.form.get('pages')
+        copies = request.form.get('copies')
+
+        try:
+            pages = int(pages) if pages else 0
+        except ValueError:
+            flash("Pages must be a number.", "danger")
+            return render_template(
+                "Add_Book.html",
+                name=current_user.name,
+                panel="Upload",
+                genres=genres
+            )
+
+        try:
+            copies = int(copies) if copies else 1
+        except ValueError:
+            flash("Copies must be a number.", "danger")
+            return render_template(
+                "Add_Book.html",
+                name=current_user.name,
+                panel="Upload",
+                genres=genres
+            )
 
         new_book = Book(
             title=title,
             authors=authors,
             genres=genres_selected,
             category=category,
-            url=url
+            url=url,
+            pages=pages,
+            copies=copies,
+            available=copies  # optionally set available to copies
         )
         new_book.save()
 
+        
+        return render_template(
+            "Add_Book.html",
+            name=current_user.name,
+            panel="Upload",
+            genres=genres
+        )
+# def add():
+#     genres = [
+#         "Animals", "Business", "Comics", "Communication", "Dark Academia",
+#         "Emotion", "Fantasy", "Fiction", "Friendship", "Graphic Novels", "Grief",
+#         "Historical Fiction", "Indigenous", "Inspirational", "Magic", "Mental Health",
+#         "Nonfiction", "Personal Development", "Philosophy", "Picture Books", "Poetry",
+#         "Productivity", "Psychology", "Romance", "School", "Self Help"
+#     ]
+
+#     if request.method == 'GET':
+#         return render_template("Add_Book.html", 
+#                                name=current_user.name, 
+#                                panel="Upload",
+#                                genres=genres)
+
+#     elif request.method == 'POST':
+#         title = request.form.get('title')
+#         authors = request.form.getlist('authors')
+#         genres_selected = request.form.getlist('genres')
+#         category = request.form.get('category')
+#         url = request.form.get('url')
+
+#         new_book = Book(
+#             title=title,
+#             authors=authors,
+#             genres=genres_selected,
+#             category=category,
+#             url=url
+#         )
+#         new_book.save()
+
 
                     
-        return render_template("Add_Book.html", panel="Upload")
+#         return render_template("Add_Book.html", panel="Upload")
 
 
 @app.route("/changeAvatar")
