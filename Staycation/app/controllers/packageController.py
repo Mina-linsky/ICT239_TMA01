@@ -177,3 +177,11 @@ def viewBookDetail(book_title):
         panel="BOOK DETAIL",
         book=book
     )
+
+@package.route('/make_loan/<book_id>')
+
+def makeLoan(book_id):
+    book = Book.objects.get(id=book_id)
+    # Full logic comes in part (c)
+    return render_template('make_loan.html', book=book)
+
