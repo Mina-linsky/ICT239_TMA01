@@ -145,11 +145,11 @@ def show_base():
     return render_template('base.html')
 
 
-@app.route("/upload", methods=['GET', 'POST'])
+@app.route("/NewBook", methods=['GET', 'POST'])
 @login_required
 def upload():
     if request.method == 'GET':
-        return render_template("upload.html", name=current_user.name, panel="Upload")
+        return render_template("Add_Book.html", name=current_user.name, panel="Upload")
     elif request.method == 'POST':
         type = request.form.get('type')
         if type == 'create':
@@ -180,7 +180,7 @@ def upload():
                     aBooking = Booking.createBooking(check_in_date=check_in_date, customer=existing_user, package=existing_package)
                     aBooking.calculate_total_cost()
                     
-        return render_template("upload.html", panel="Upload")
+        return render_template("Add_Book.html", panel="Upload")
 
 
 @app.route("/changeAvatar")

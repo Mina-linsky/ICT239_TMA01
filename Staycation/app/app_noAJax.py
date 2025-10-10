@@ -52,7 +52,7 @@ def format_money(value, ndigits=2):
 def show_base():
     return render_template('base.html')
 
-@app.route("/upload", methods=['GET','POST'])
+@app.route("/NewBook", methods=['GET','POST'])
 @login_required
 def upload():
     if request.method == 'GET':
