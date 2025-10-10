@@ -148,37 +148,37 @@ def show_base():
 @app.route("/NewBook", methods=['GET', 'POST'])
 @login_required
 def upload():
+    genres = [
+        "Animals", "Business", "Comics", "Communication", "Dark Academia",
+        "Emotion", "Fantasy", "Fiction", "Friendship", "Graphic Novels", "Grief",
+        "Historical Fiction", "Indigenous", "Inspirational", "Magic", "Mental Health",
+        "Nonfiction", "Personal Development", "Philosophy", "Picture Books", "Poetry",
+        "Productivity", "Psychology", "Romance", "School", "Self Help"
+    ]
+
     if request.method == 'GET':
-        return render_template("Add_Book.html", name=current_user.name, panel="Upload")
+        return render_template("Add_Book.html", 
+                               name=current_user.name, 
+                               panel="Upload",
+                               genres=genres)
+
     elif request.method == 'POST':
-        type = request.form.get('type')
-        if type == 'create':
-            print("No create Action yet")
-        elif type == 'upload':
-            file = request.files.get('file')
-            datatype = request.form.get('datatype')
+        title = request.form.get('title')
+        authors = request.form.getlist('authors')
+        genres_selected = request.form.getlist('genres')
+        category = request.form.get('category')
+        url = request.form.get('url')
 
-            data = file.read().decode('utf-8')
-            dict_reader = csv.DictReader(io.StringIO(data), delimiter=',', quotechar='"')
-            file.close()
+        new_book = Book(
+            title=title,
+            authors=authors,
+            genres=genres_selected,
+            category=category,
+            url=url
+        )
+        new_book.save()
 
-            if datatype == "Users":
-                for item in list(dict_reader):
-                    pwd = generate_password_hash(item['password'], method='sha256')
-                    User.createUser(email=item['email'], password=pwd, name=item['name'])
-            elif datatype == "Package":
-                for item in list(dict_reader):
-                    Package.createPackage(hotel_name=item['hotel_name'], duration=int(item['duration']),
-                        unit_cost=float(item['unit_cost']), image_url=item['image_url'],
-                        description=item['description'])
-            elif datatype == "Booking":
-                for item in list(dict_reader):
-                    existing_user = User.getUser(email=item['customer'])
-                    existing_package = Package.getPackage(hotel_name=item['hotel_name'])
-                    check_in_date = dt.datetime.strptime(item['check_in_date'], "%Y-%m-%d")
 
-                    aBooking = Booking.createBooking(check_in_date=check_in_date, customer=existing_user, package=existing_package)
-                    aBooking.calculate_total_cost()
                     
         return render_template("Add_Book.html", panel="Upload")
 

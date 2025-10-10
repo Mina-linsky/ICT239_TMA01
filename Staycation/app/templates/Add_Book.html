@@ -1,32 +1,88 @@
 {% extends "base.html" %}
 {% block mainblock %}
-<div class="col-xl-6 col-sm-4 p-2">
-  <div class="card card-common">
-<div class="card-header">
-  <h2>Upload recordings</h2>
-</div>
-<div class="card-body">
-        <form action="/NewBook" method="post" enctype="multipart/form-data">
-            <input name="type" type="hidden" value="upload">
-            <div>
-                <div>
-                <label for='upload'>Upload CSV file</label>
-                </div>
-                <div>
-                <label for="datatype">with data type of:</label>
-                <select id="datatype" name="datatype">
-                  <option value="Users">Users</option>
-                  <option value="Package">Package</option>
-                  <option value="Booking">Booking</option>
-                </select>
-                </div>
-                <input class="upload" id='upload' name='file' type='file' accept='.csv' required>
-            </div>
-            <div>
-                <input type="submit" value="Upload" type="Upload"/>
-            </div>
-        </form>
-</div>
-</div>
+<div class="col-xl-8 col-sm-8 p-4">
+  <div class="card card-common shadow-lg rounded-4">
+    <div class="card-header bg-light">
+      <h2 class="text-center text-dark fw-bold">ADD A BOOK</h2>
+    </div>
+
+    <div class="card-body">
+      <form action="/NewBook" method="post">
+        <input type="hidden" name="type" value="create">
+
+        <div class="form-group mb-3">
+          <label for="genres">Select Genres (you can choose more than one):</label>
+          <select id="genres" name="genres" class="form-control" multiple required>
+            {% for genre in genres %}
+              <option value="{{ genre }}">{{ genre }}</option>
+            {% endfor %}
+          </select>
+          <small class="form-text text-muted">
+            Hold <b>Ctrl</b> (Windows) or <b>Cmd</b> (Mac) to select multiple genres.
+          </small>
+        </div>
+
+        <!-- Title -->
+        <div class="mb-3">
+          <label for="title" class="form-label fw-bold">Title:</label>
+          <input type="text" id="title" name="title" class="form-control" required>
+        </div>
+
+        <!-- Category -->
+        <div class="mb-3">
+          <label for="category" class="form-label fw-bold">Choose a category:</label>
+          <select id="category" name="category" class="form-select" required>
+            <option value="Children">Children</option>
+            <option value="Teens">Teens</option>
+            <option value="Adults">Adults</option>
+          </select>
+        </div>
+
+        <!-- URL for Cover -->
+        <div class="mb-3">
+          <label for="url" class="form-label fw-bold">URL for Cover:</label>
+          <input type="url" id="url" name="url" class="form-control" placeholder="https://example.com/image.jpg">
+        </div>
+
+        <!-- Description -->
+        <div class="mb-3">
+          <label for="description" class="form-label fw-bold">Description:</label>
+          <textarea id="description" name="description" class="form-control" rows="4" required></textarea>
+        </div>
+
+        <!-- Authors -->
+        {% for i in range(1,6) %}
+        <div class="row mb-2 align-items-center">
+          <div class="col-10">
+            <label for="author{{ i }}" class="form-label">Author {{ i }}:</label>
+            <input type="text" id="author{{ i }}" name="author{{ i }}" class="form-control">
+          </div>
+          <div class="col-2 text-center">
+            <label class="form-check-label">
+              <input type="checkbox" name="illustrator{{ i }}" class="form-check-input"> Illustrator
+            </label>
+          </div>
+        </div>
+        {% endfor %}
+
+        <!-- Number of pages -->
+        <div class="mb-3">
+          <label for="pages" class="form-label fw-bold">Number of pages:</label>
+          <input type="number" id="pages" name="pages" class="form-control" min="1" required>
+        </div>
+
+        <!-- Number of copies -->
+        <div class="mb-3">
+          <label for="copies" class="form-label fw-bold">Number of copies:</label>
+          <input type="number" id="copies" name="copies" class="form-control" min="1" required>
+        </div>
+
+        <!-- Submit -->
+        <div class="text-center mt-4">
+          <button type="submit" class="btn btn-success px-5 py-2 fw-bold">Submit</button>
+        </div>
+      </form>
+    </div>
+  </div>
 </div>
 {% endblock %}
