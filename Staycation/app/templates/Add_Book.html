@@ -10,6 +10,15 @@
       <form action="/NewBook" method="post">
         <input type="hidden" name="type" value="create">
 
+        <!-- Success message card -->
+      {% if success %}
+      <div class="card mb-3 border-success shadow-sm">
+        <div class="card-body text-center text-success fw-bold">
+          {{ success }}
+        </div>
+      </div>
+      {% endif %}
+
         <div class="form-group mb-3">
           <label for="genres">Select Genres (you can choose more than one):</label>
           <select id="genres" name="genres" class="form-control" multiple required>

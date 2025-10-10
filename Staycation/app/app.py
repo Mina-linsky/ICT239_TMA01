@@ -226,11 +226,18 @@ def add():
         new_book.save()
 
         
+        # return render_template(
+        #     "Add_Book.html",
+        #     name=current_user.name,
+        #     panel="Upload",
+        #     genres=genres
+        # )
         return render_template(
             "Add_Book.html",
             name=current_user.name,
             panel="Upload",
-            genres=genres
+            genres=genres,
+            success="Book successfully added~!"  # pass success message
         )
 # def add():
 #     genres = [
