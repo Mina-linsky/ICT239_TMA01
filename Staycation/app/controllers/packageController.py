@@ -178,10 +178,35 @@ def viewBookDetail(book_title):
         book=book
     )
 
-@package.route('/make_loan/<book_id>')
+@package.route('/make_loan/<book_id>', methods=['GET', 'POST'])
+def make_loan(book_id):
+    book = Book.objects(id=book_id).first()
 
-def makeLoan(book_id):
-    book = Book.objects.get(id=book_id)
-    # Full logic comes in part (c)
+    if not book:
+        return "Book not found", 404
+
+    if request.method == 'POST':
+        member_id = request.form.get('member_id')
+        borrow_date = request.form.get('borrowDate')
+        return_date = request.form.get('returnDate')
+
+        # Create a new Loan document
+        loan = Loan(
+            member=member_id,
+            book=book,
+            borrowDate=borrow_date,
+            returnDate=return_date,
+        )
+        loan.save()
+
+        # Optional: reduce available count if it exists
+        if hasattr(book, 'available_count'):
+            book.available_count -= 1
+            book.save()
+
+        flash('Loan successfully created!', 'success')
+        return redirect(url_for('show_books'))  # Or wherever you list books
+
     return render_template('make_loan.html', book=book)
+
 
