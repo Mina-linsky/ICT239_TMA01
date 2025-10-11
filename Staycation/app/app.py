@@ -143,7 +143,7 @@ from app.models.lib_books import Book
 
 @app.route('/base')
 def show_base():
-    return render_template('BookTitles.html')
+    return render_template('books.html')
 
 
 @app.route("/NewBook", methods=['GET', 'POST'])
