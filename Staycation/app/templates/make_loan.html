@@ -9,25 +9,27 @@
 
     <div class="card-body">
         <form action="{{ url_for('packageController.make_loan', book_id=book.id) }}" method="post">
+        
+        <!-- Book Title -->
         <div class="mb-3">
           <label class="form-label fw-bold">Book Title:</label>
           <input type="text" class="form-control" value="{{ book.title }}" readonly>
         </div>
 
+        <!-- Current User -->
         <div class="mb-3">
-            <label class="form-label fw-bold">User:</label>
-            <select name="member_id" class="form-control" required>
-              {% for u in users %}
-                <option value="{{ u.id }}">{{ u.name }}</option>
-              {% endfor %}
-            </select>
+          <label class="form-label fw-bold">User:</label>
+          <input type="text" class="form-control" value="{{ current_user.name }}" readonly>
+          <input type="hidden" name="member_id" value="{{ current_user.id }}">
         </div>
 
+        <!-- Borrow Date -->
         <div class="mb-3">
           <label class="form-label fw-bold">Borrow Date:</label>
           <input type="date" name="borrowDate" class="form-control" required>
         </div>
 
+        <!-- Return Date -->
         <div class="mb-3">
           <label class="form-label fw-bold">Return Date:</label>
           <input type="date" name="returnDate" class="form-control" required>
