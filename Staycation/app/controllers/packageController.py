@@ -80,21 +80,20 @@ def make_loan(book_id):
             return redirect(url_for('packageController.book_titles'))
 
         if request.method == 'POST':
+            # This should be in your make_loan route:
             borrow_date = datetime.now() + timedelta(days=random.randint(10, 20))
             
-            print(f"🔍 ROUTE DEBUG: Using ID-based approach")
-            print(f"   User ID: {current_user.id}")
-            print(f"   Book ID: {book.id}")
-            print(f"   Borrow date: {borrow_date}")
-            
-            # Call with IDs instead of objects
             loan, msg = Loan.create_loan(current_user.id, book.id, borrow_date)
             
             if loan:
-                flash("Loan successfully created!", "success")
+                flash("Loan successfully created!", "success")  # This will show on book_titles page
                 return redirect(url_for('packageController.book_titles'))
             else:
-                flash(msg, "error")
+                # Check if it's the "already borrowed" error
+                if "already have an active loan" in msg:
+                    flash("You already borrowed this book~!", "warning")
+                else:
+                    flash(msg, "error")
                 return render_template('make_loan.html', book=book)
 
         return render_template('make_loan.html', book=book)

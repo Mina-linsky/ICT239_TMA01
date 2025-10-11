@@ -4,6 +4,19 @@
 <div class="container my-4">
   <h3 class="text-success mb-4">BOOK TITLES</h3>
 
+  <!-- Add this to your book_titles.html template -->
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}
+    {% for category, message in messages %}
+        <div class="card mb-3 {% if category == 'success' %}border-success{% elif category == 'warning' %}border-warning{% else %}border-danger{% endif %} shadow-sm">
+            <div class="card-body text-center {% if category == 'success' %}text-success{% elif category == 'warning' %}text-warning{% else %}text-danger{% endif %} fw-bold">
+                {{ message }}
+            </div>
+        </div>
+    {% endfor %}
+{% endif %}
+{% endwith %}
+
   <!-- 📚 Combined Top Bar -->
   <div class="d-flex justify-content-between align-items-center flex-wrap bg-light p-3 rounded mb-4 shadow-sm">
     <!-- Left: Number of Titles -->

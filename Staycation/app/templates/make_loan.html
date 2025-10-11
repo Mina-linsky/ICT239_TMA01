@@ -8,6 +8,19 @@
     </div>
 
     <div class="card-body">
+      <!-- Success/Error message card - same style as add_book -->
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          {% for category, message in messages %}
+            <div class="card mb-3 {% if category == 'success' %}border-success{% elif category == 'warning' %}border-warning{% else %}border-danger{% endif %} shadow-sm">
+              <div class="card-body text-center {% if category == 'success' %}text-success{% elif category == 'warning' %}text-warning{% else %}text-danger{% endif %} fw-bold">
+                {{ message }}
+              </div>
+            </div>
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+
       <form action="{{ url_for('packageController.make_loan', book_id=book.id) }}" method="post">
         
         <!-- Book Title -->
@@ -34,15 +47,8 @@
         </div>
 
         <button type="submit" class="btn btn-primary w-100">Confirm Loan</button>
-
-        {% if message %}
-        <div class="alert alert-info mt-3">
-          {{ message }}
-        </div>
-        {% endif %} 
       </form>
     </div>
   </div>
 </div>
-
 {% endblock %}
