@@ -57,15 +57,21 @@
               More Details
             </a>
 
-            {% if book.available > 0 %}
-            
-            <a href="{{ url_for('packageController.make_loan', book_id=book.id) }}" 
-               class="btn btn-success btn-sm px-3">
-              Make a Loan
-            </a>
-          {% else %}
-            <button class="btn btn-danger btn-sm px-3" disabled>Unavailable</button>
-          {% endif %}
+            <!-- Make a Loan / Unavailable Button -->
+              {% if current_user.is_authenticated %}
+              {% if book.available > 0 %}
+                  <a href="{{ url_for('packageController.make_loan', book_id=book.id) }}" 
+                    class="btn btn-success px-4">
+                    Make a Loan
+                  </a>
+              {% else %}
+                  <button class="btn btn-danger px-4" disabled>Unavailable</button>
+              {% endif %}
+              {% else %}
+              <a href="{{ url_for('auth.login') }}" class="btn btn-warning px-4">
+                  Log in to Make a Loan
+              </a>
+              {% endif %}
           </div>
         </div>
       </div>
