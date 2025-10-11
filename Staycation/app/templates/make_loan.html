@@ -8,7 +8,7 @@
     </div>
 
     <div class="card-body">
-        <form action="{{ url_for('packageController.make_loan', book_id=book.id) }}" method="post">
+      <form action="{{ url_for('packageController.make_loan', book_id=book.id) }}" method="post">
         
         <!-- Book Title -->
         <div class="mb-3">
@@ -20,25 +20,23 @@
         <div class="mb-3">
           <label class="form-label fw-bold">User:</label>
           <input type="text" class="form-control" value="{{ current_user.name }}" readonly>
-          <input type="hidden" name="member_id" value="{{ current_user.id }}">
         </div>
 
-        <!-- Borrow Date -->
+        <!-- Available Copies -->
         <div class="mb-3">
-          <label class="form-label fw-bold">Borrow Date:</label>
-          <input type="date" name="borrowDate" class="form-control" required>
+          <label class="form-label fw-bold">Available Copies:</label>
+          <input type="text" class="form-control" value="{{ book.available }}" readonly>
         </div>
 
-        <!-- Return Date -->
-        <div class="mb-3">
-          <label class="form-label fw-bold">Return Date:</label>
-          <input type="date" name="returnDate" class="form-control" required>
+        <!-- Information Message -->
+        <div class="alert alert-info">
+          <strong>Note:</strong> The borrow date will be automatically set to a random date (10-20 days after today).
         </div>
 
         <button type="submit" class="btn btn-primary w-100">Confirm Loan</button>
 
         {% if message %}
-        <div class="alert alert-info">
+        <div class="alert alert-info mt-3">
           {{ message }}
         </div>
         {% endif %} 
@@ -46,4 +44,5 @@
     </div>
   </div>
 </div>
+
 {% endblock %}

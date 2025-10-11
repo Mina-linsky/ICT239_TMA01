@@ -1,15 +1,20 @@
 from app import db
 from datetime import datetime, timedelta
+from models.users import User
+from models.lib_books import Book
 import random
 
 class Loan(db.Document):
-    member = db.ReferenceField('User', required=True)
-    book = db.ReferenceField('Book', required=True)
+    meta = {'collection': 'loans'}
+    # member = db.ReferenceField('User', required=True)
+    # book = db.ReferenceField('Book', required=True)
+    member = db.ReferenceField(User, required=True)
+    book = db.ReferenceField(Book, required=True)   
     borrowDate = db.DateTimeField(required=True, default=datetime.utcnow)
     returnDate = db.DateTimeField(null=True)
     renewCount = db.IntField(default=0)
 
-    meta = {'collection': 'loans'}
+   
 
     def __str__(self):
         return f"Loan({self.member}, {self.book}, {self.borrowDate.strftime('%Y-%m-%d')})"
@@ -18,32 +23,68 @@ class Loan(db.Document):
     # CREATE
     # --------------------------------------------------
     @classmethod
-    def create_loan(cls, user, book, borrow_date):
-        """
-        Create a new loan if:
-        - The user does NOT already have an unreturned loan for this book.
-        - The book's available count > 0.
-        - Then update the book's available count.
-        """
-        # Check if user already has an active (unreturned) loan for this book
-        existing_loan = cls.objects(member=user, book=book, returnDate=None).first()
-        if existing_loan:
-            return None, "You already have an active loan for this book."
+    def create_loan(cls, user_id, book_id, borrow_date):
+        print(f"🚀 DEBUG: Entering create_loan method with IDs")
+        print(f"   User ID: {user_id}, Book ID: {book_id}")
+        
+        try:
+            # Get the actual document objects
+            user = User.objects(id=user_id).first()
+            book = Book.objects(id=book_id).first()
+            
+            if not user:
+                return None, "User not found"
+            if not book:
+                return None, "Book not found"
+                
+            print(f"🔍 DEBUG: Retrieved user type: {type(user)}")
+            print(f"🔍 DEBUG: Retrieved book type: {type(book)}")
 
-        # Check if book is available
-        if book.available <= 0:
-            return None, "No copies available for this book."
+            # Check existing loans
+            print("🔍 DEBUG: Checking for existing unreturned loans...")
+            existing_loan = cls.objects(member=user, book=book, returnDate=None).first()
+            if existing_loan:
+                print(f"❌ DEBUG: User already has unreturned loan: {existing_loan.id}")
+                return None, "You already have an active loan for this book."
+            print("✅ DEBUG: No existing unreturned loans found")
 
-        # Create loan
-        new_loan = cls(member=user, book=book, borrowDate=borrow_date)
-        new_loan.save()
+            # Check availability
+            print(f"📚 DEBUG: Book availability check - Available: {book.available}")
+            if book.available <= 0:
+                print("❌ DEBUG: Book not available (available <= 0)")
+                return None, "No copies available for this book."
+            print("✅ DEBUG: Book is available")
 
-        # Update book availability
-        book.available -= 1
-        book.save()
+            # Create new loan
+            print("🆕 DEBUG: Creating new Loan object...")
+            new_loan = cls(
+                member=user,
+                book=book,
+                borrowDate=borrow_date,
+                renewCount=0,
+                returnDate=None
+            )
+            print(f"   Loan object created (not saved yet)")
 
-        return new_loan, "Loan successfully created."
+            # Save the loan
+            print("💾 DEBUG: Attempting to save loan to database...")
+            new_loan.save()
+            print(f"✅ DEBUG: Loan saved successfully! New loan ID: {new_loan.id}")
 
+            # Update book availability
+            print(f"📚 DEBUG: Updating book availability from {book.available} to {book.available - 1}")
+            book.available -= 1
+            book.save()
+            print("✅ DEBUG: Book availability updated successfully")
+
+            return new_loan, "Loan successfully created."
+
+        except Exception as e:
+            print(f"❌ DEBUG: Exception in create_loan: {str(e)}")
+            print(f"   Exception type: {type(e).__name__}")
+            import traceback
+            print(f"   Traceback: {traceback.format_exc()}")
+            return None, f"Error creating loan: {str(e)}"
     # --------------------------------------------------
     # RETRIEVE
     # --------------------------------------------------

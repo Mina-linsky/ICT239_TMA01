@@ -20,13 +20,13 @@
                 </thead>
                 <tbody>
                     {% for loan in loans %}
-                    {% set due_date = loan.borrow_date + timedelta(days=14) %}
+                    {% set due_date = loan.borrowDate + timedelta(days=14) %}
                     <tr>
-                        <td>{{ loan.book_title }}</td>
-                        <td>{{ loan.borrow_date.strftime('%Y-%m-%d') }}</td>
+                        <td>{{ loan.book.title }}</td>  <!-- Access book title through reference -->
+                        <td>{{ loan.borrowDate.strftime('%Y-%m-%d') }}</td>
                         <td>{{ due_date.strftime('%Y-%m-%d') }}</td>
                         <td>
-                            {% if loan.returned_date %}
+                            {% if loan.returnDate %}
                                 Returned
                             {% elif due_date < today %}
                                 Overdue
@@ -35,13 +35,13 @@
                             {% endif %}
                         </td>
                         <td>
-                            {% if not loan.returned_date %}
-                                <a href="{{ url_for('return_loan', loan_id=loan.id) }}" class="btn btn-sm btn-success">Return</a>
-                                {% if loan.renew_count < 2 and due_date >= today %}
-                                    <a href="{{ url_for('renew_loan', loan_id=loan.id) }}" class="btn btn-sm btn-primary">Renew</a>
+                            {% if not loan.returnDate %}
+                                <a href="{{ url_for('packageController.return_loan', loan_id=loan.id) }}" class="btn btn-sm btn-success">Return</a>
+                                {% if loan.renewCount < 2 and due_date >= today %}
+                                    <a href="{{ url_for('packageController.renew_loan', loan_id=loan.id) }}" class="btn btn-sm btn-primary">Renew</a>
                                 {% endif %}
                             {% else %}
-                                <a href="{{ url_for('delete_loan', loan_id=loan.id) }}" class="btn btn-sm btn-danger">Delete</a>
+                                <a href="{{ url_for('packageController.delete_loan', loan_id=loan.id) }}" class="btn btn-sm btn-danger">Delete</a>
                             {% endif %}
                         </td>
                     </tr>
