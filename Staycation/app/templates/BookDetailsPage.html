@@ -35,7 +35,7 @@
 
   <!-- Make a Loan / Unavailable Button -->
   {% if book.available > 0 %}
-    <a href="{{ url_for('packageController.makeLoan', book_id=book.id) }}" 
+    <a href="{{ url_for('packageController.make_loan', book_id=book.id) }}" 
        class="btn btn-success px-4">
       Make a Loan
     </a>

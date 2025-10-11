@@ -392,5 +392,9 @@ def chooseAvatar():
     
     return jsonify(path=chosenPath)
 
+@app.route("/userLoanStatus")
+def userLoans():
+    return render_template('user_Loan.html')
+
 if __name__ == '__main__':
     app.run(debug=True)

@@ -65,10 +65,14 @@
 
               {% else %}
               {% if current_user.is_authenticated %}
-              <li class="nav-item"><a href="/manageBooking" class="nav-link text-white p-3 mb-2 sidebar-link"><i
-                    class="fas fa-calendar text-light fa-lg mr-3"></i>Manage Booking</a></li>
+              <!-- <li class="nav-item"><a href="/manageBooking" class="nav-link text-white p-3 mb-2 sidebar-link"><i
+                    class="fas fa-calendar text-light fa-lg mr-3"></i>Manage Booking</a></li> -->
+              <li class="nav-item"><a href="/BookTitles" class="nav-link text-white p-3 mb-2 sidebar-link"><i
+                      class="fas fa-address-card text-light fa-lg mr-3"></i>Book Titles</a></li>
               <li class="nav-item"><a href="/changeAvatar" class="nav-link text-white p-3 mb-2 sidebar-link"><i
                     class="fas fa-smile text-light fa-lg mr-3"></i>Change Avatar</a></li>
+              <li class="nav-item"><a href="/userLoanStatus" class="nav-link text-white p-3 mb-2 sidebar-link"><i
+                      class="fas fa-smile text-light fa-lg mr-3"></i>Loans</a></li>
               {% endif %}
               {% endif %}
 

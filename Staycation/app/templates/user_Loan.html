@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block mainblock %}
+<div class="col-xl-8 col-sm-8 p-4">
+    <div class="card card-common shadow-lg rounded-4">
+        <div class="card-header bg-light">
+            <h2 class="text-center text-dark fw-bold">My Loans</h2>
+        </div>
+
+        <div class="card-body">
+            {% if loans %}
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Book Title</th>
+                        <th>Borrow Date</th>
+                        <th>Due Date</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for loan in loans %}
+                    {% set due_date = loan.borrow_date + timedelta(days=14) %}
+                    <tr>
+                        <td>{{ loan.book_title }}</td>
+                        <td>{{ loan.borrow_date.strftime('%Y-%m-%d') }}</td>
+                        <td>{{ due_date.strftime('%Y-%m-%d') }}</td>
+                        <td>
+                            {% if loan.returned_date %}
+                                Returned
+                            {% elif due_date < today %}
+                                Overdue
+                            {% else %}
+                                Borrowed
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if not loan.returned_date %}
+                                <a href="{{ url_for('return_loan', loan_id=loan.id) }}" class="btn btn-sm btn-success">Return</a>
+                                {% if loan.renew_count < 2 and due_date >= today %}
+                                    <a href="{{ url_for('renew_loan', loan_id=loan.id) }}" class="btn btn-sm btn-primary">Renew</a>
+                                {% endif %}
+                            {% else %}
+                                <a href="{{ url_for('delete_loan', loan_id=loan.id) }}" class="btn btn-sm btn-danger">Delete</a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <p class="text-center text-muted">You have no loan records.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
