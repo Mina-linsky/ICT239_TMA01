@@ -63,6 +63,9 @@
 #         book=the_book
 #     )
 from flask import Blueprint, request, render_template, redirect, url_for
+from datetime import datetime, timedelta
+import random
+from flask_login import current_user, login_required
 from bson import ObjectId
 from datetime import datetime
 from models.lib_books import Book
@@ -184,56 +187,34 @@ def viewBookDetail(book_title):
 
 @package.route('/make_loan/<book_id>', methods=['GET', 'POST'])
 def make_loan(book_id):
-    # --- Step 1: Fetch book as a proper document ---
     try:
-        book_obj_id = ObjectId(book_id)
-        book = Book.objects(id=book_obj_id).first()  # This MUST be a document instance
-    except Exception:
-        book = None
+        # Get the book as a Document object
+        book = Book.objects(id=book_id).first()
+        if not book:
+            return redirect(url_for('packageController.book_titles'))
 
-    if not book:
-        return redirect(url_for('show_base'))  # or redirect to BookTitles page
+        message = None
 
-    # --- Step 2: Fetch all users for selection ---
-    users = User.objects()
+        if request.method == 'POST':
+            borrow_date = datetime.now() - timedelta(days=random.randint(10, 20))
 
-    if request.method == 'POST':
-        member_input = request.form.get('member_id')
-        borrow_date_str = request.form.get('borrowDate')
-        return_date_str = request.form.get('returnDate')
+            # Debug: Check types before creating loan
+            print(f"User type: {type(current_user)}")
+            print(f"Book type: {type(book)}")
+            print(f"Book ID: {book.id}")
 
-        # --- Step 3: Parse dates safely ---
-        try:
-            borrow_date = datetime.strptime(borrow_date_str, "%Y-%m-%d")
-            return_date = datetime.strptime(return_date_str, "%Y-%m-%d")
-        except ValueError:
-            return redirect(request.url)
+            # Try to create a loan
+            loan, msg = Loan.create_loan(current_user, book, borrow_date)
+            message = msg
 
-        # --- Step 4: Fetch user as a document ---
-        user = None
-        try:
-            user_obj_id = ObjectId(member_input)
-            user = User.objects(id=user_obj_id).first()
-        except Exception:
-            pass
+            if loan:
+                # Update book availability
+                book.available -= 1
+                book.save()
+                return redirect(url_for('packageController.book_titles'))
 
-        if not user:
-            user = User.objects(name=member_input).first()
-
-        if not user:
-            return redirect(request.url)
-
-        # --- Step 5: Create Loan using document instances ---
-        loan, msg = Loan.create_loan(user, book, borrow_date)
-        if not loan:
-            return redirect(request.url)
-
-        # --- Step 6: Optionally set returnDate ---
-        loan.returnDate = return_date
-        loan.save()
-
-        # --- Step 7: Redirect to BookTitles page ---
-        return redirect(url_for('show_base'))
-
-    # --- Step 8: Render the loan form ---
-    return render_template('make_loan.html', book=book, users=users)
+        return render_template('make_loan.html', book=book, message=message)
+    
+    except Exception as e:
+        print(f"Error in make_loan: {str(e)}")
+        return redirect(url_for('packageController.book_titles'))
