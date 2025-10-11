@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% set panel = "Make a Loan" %}
 {% block mainblock %}
 <div class="col-xl-8 col-sm-8 p-4">
   <div class="card card-common shadow-lg rounded-4">
@@ -14,8 +15,12 @@
         </div>
 
         <div class="mb-3">
-          <label class="form-label fw-bold">Member ID:</label>
-          <input type="text" name="member_id" class="form-control" required>
+            <label class="form-label fw-bold">User:</label>
+            <select name="member_id" class="form-control" required>
+              {% for u in users %}
+                <option value="{{ u.id }}">{{ u.name }}</option>
+              {% endfor %}
+            </select>
         </div>
 
         <div class="mb-3">
