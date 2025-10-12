@@ -35,7 +35,7 @@
             <a href="{{ url_for('packageController.book_titles') }}" class="navbar-brand text-white d-block mx-auto text-center py-3 mb-4 bottom-border">SG Library</a>
             {% if current_user.is_authenticated %}
             <div class="bottom-border pb-3">
-              {% if current_user.email == "admin@abc.com" %}
+              {% if current_user.email == "admin@lib.sg.com" %}
               <img src="{{ url_for('static', filename='img/admin.jpeg')}}" width="50" class="rounded-circle mr-3">
               {% elif current_user.avatar == "" %}
               <img src="{{ url_for('static', filename='img/avatar/default-min.jpg')}}" width="50"
@@ -57,7 +57,7 @@
                     class="fas fa-user text-light fa-lg mr-3"></i>Register</a></li>
               {% endif %}
 
-              {% if current_user.email == "admin@abc.com" %}
+              {% if current_user.email == "admin@lib.sg.com" %}
               <li class="nav-item"><a href="/BookTitles" class="nav-link text-white p-3 mb-2 sidebar-link"><i
                 class="fas fa-address-card text-light fa-lg mr-3"></i>Book Titles</a></li>
               <li class="nav-item"><a href="/NewBook" class="nav-link text-white p-3 mb-2 sidebar-link"><i
